@@ -33,10 +33,10 @@ const Navbar = () => {
     <div className="bg-base-300">
       <div className="navbar align-element mb-10">
         <div className="navbar-start">
-          <Link className="hidden lg:flex" to="/">
+          <Link className=" btn btn-primary hidden lg:flex" to="/">
             Kitchen app
           </Link>
-          <Link className="flex lg:hidden">MK</Link>
+          <Link className="btn btn-primary flex lg:hidden">MK</Link>
         </div>
 
         <div className="navbar-end">

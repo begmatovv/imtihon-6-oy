@@ -20,6 +20,7 @@ function Create() {
       if (!ingredients.includes(ingredient)) {
         setIngredients((prev) => {
           toast.success("Added successfully");
+          console.log(ingredient);
           return [...prev, ingredient];
         });
       } else {
@@ -36,6 +37,7 @@ function Create() {
       name,
       time,
       body,
+      ingredients,
       image,
     };
     postData(newRecept);
@@ -91,9 +93,9 @@ function Create() {
               Ingredients:{" "}
               {ingredients.map((ing, index) => {
                 if (index === ingredients.length - 1) {
-                  return <span key={ing}>{ing}</span>;
+                  return <span key={index}>{ing}</span>;
                 } else {
-                  return <span key={ing}>{ing}, </span>;
+                  return <span key={index}>{ing}, </span>;
                 }
               })}
             </p>
