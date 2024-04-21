@@ -7,7 +7,6 @@ const Signout = () => {
     signOut(auth)
       .then(() => {
         console.log("Signout");
-        toast.blank("signed out");
       })
       .catch((error) => {
         console.log(error);
