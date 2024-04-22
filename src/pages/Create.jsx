@@ -1,150 +1,92 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { useFetch } from "../hooks/useFetch";
+import { Form, useActionData, useNavigate } from "react-router-dom";
+
+import FormInput from "../components/FormInput";
+import useCreate from "../hooks/useCreate";
+export const action = async ({ request }) => {
+  let formData = await request.formData();
+  const title = formData.get("title");
+  const cookingTime = formData.get("cookingTime");
+  const method = formData.get("method");
+  const image = formData.get("image");
+  return { title, cookingTime, method, image };
+};
 function Create() {
-  const { data, postData } = useFetch("http://localhost:3000/recepts", "POST");
+  const { data, addNewDoc } = useCreate();
+  const createData = useActionData();
   const navigate = useNavigate();
   const [ingredient, setIngredient] = useState("");
   const [ingredients, setIngredients] = useState([]);
-  const [name, setName] = useState("");
-  const [body, setBody] = useState("");
-  const [image, setImage] = useState("");
-  const [time, setTime] = useState("");
-  function handleCreate() {
-    toast.success("added new recept successfully");
-  }
+
   const addIngredient = (e) => {
     e.preventDefault();
-    if (ingredient.trim()) {
-      if (!ingredients.includes(ingredient)) {
-        setIngredients((prev) => {
-          toast.success("Added successfully");
-          console.log(ingredient);
-          return [...prev, ingredient];
-        });
-      } else {
-        toast.error("Already has been added ");
-      }
-    } else {
-      toast.error("Write an ingredient");
+
+    if (!ingredients.includes(ingredient)) {
+      setIngredients((prev) => {
+        return [...prev, ingredient];
+      });
     }
     setIngredient("");
   };
-  function handleSubmit(e) {
-    e.preventDefault();
-    const newRecept = {
-      name,
-      time,
-      body,
-      ingredients,
-      image,
-    };
-    postData(newRecept);
-  }
   useEffect(() => {
+    if (createData && !data) {
+      const newRecept = { ...createData, ingredients };
+      addNewDoc(newRecept);
+    }
+
     if (data) {
       navigate("/");
     }
-  }, [data]);
+  }, [createData, data]);
 
   return (
-    <div className="w-full ">
-      <h1 className="text-3xl text-center font-bold mb-10">
-        Create New Recipie
-      </h1>
-
-      <form
-        onSubmit={handleSubmit}
-        className="flex items-center flex-col gap-5 "
-      >
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Name</span>
-          </div>
-          <input
-            type="text"
-            placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Ingredients:</span>
-          </div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Type here"
-              className="input input-bordered w-full max-w-xs"
-              onChange={(e) => {
-                setIngredient(e.target.value);
-              }}
-              value={ingredient}
-            />
-            <button onClick={addIngredient} className="btn-secondary btn">
-              Add
-            </button>
-          </div>
-          <div>
-            <p>
-              Ingredients:{" "}
-              {ingredients.map((ing, index) => {
-                if (index === ingredients.length - 1) {
-                  return <span key={index}>{ing}</span>;
-                } else {
-                  return <span key={index}>{ing}, </span>;
-                }
+    <div className="grid place-items-center">
+      <div className="max-w-96 w-full">
+        {" "}
+        <h1 className="text-3xl text-center font-bold mb-10">
+          Create New Recipie
+        </h1>
+        <Form method="POST">
+          <FormInput label="Title" type="text" name="title" />
+          <div className="flex justify-center flex-col">
+            <div className="flex items-center gap-5 w-full">
+              <label className="form-control w-full mb-3">
+                <div className="label">
+                  <span className="label-text">Ingredient</span>
+                </div>
+                <input
+                  onChange={(e) => setIngredient(e.target.value)}
+                  type="text"
+                  name="ingredients"
+                  placeholder="Type here"
+                  className="input input-bordered w-full"
+                  value={ingredient}
+                />
+              </label>
+              <button
+                onClick={addIngredient}
+                className="btn btn-secondary flex"
+              >
+                Add
+              </button>
+            </div>
+            <p className="text-left mt-2 mb-3">
+              Ingredients:
+              {ingredients.map((ing) => {
+                return <span key={ing}>{ing},</span>;
               })}
             </p>
           </div>
-        </label>
-
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Cooking Time</span>
+          <FormInput label="Photo URL" type="url" name="image" />
+          <FormInput label="Cooking Time" type="number" name="cookingTime" />
+          <FormInput label="Method" type="text" name="method" />
+          <div>
+            <button className="btn btn-secondary w-full mb-3" type="submit">
+              Submit
+            </button>
           </div>
-          <input
-            type="number"
-            placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-          />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Image URL:</span>
-          </div>
-          <input
-            type="url"
-            placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-          />
-        </label>
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Body</span>
-          </div>
-          <textarea
-            className="textarea textarea-bordered h-24"
-            placeholder="Bio"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-          ></textarea>
-        </label>
-
-        <button
-          onClick={handleCreate}
-          className="btn btn-secondary w-full max-w-xs"
-        >
-          Submit
-        </button>
-      </form>
+        </Form>
+      </div>
     </div>
   );
 }

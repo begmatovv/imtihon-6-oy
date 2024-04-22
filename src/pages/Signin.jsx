@@ -1,6 +1,6 @@
 import { Link, Form, useActionData } from "react-router-dom";
 
-import useSignup from "../hooks/useSignup";
+import { useSignup } from "../hooks/useSignup";
 import { FcGoogle } from "react-icons/fc";
 import FormInput from "../components/FormInput";
 import useLogin from "../hooks/useLogin";

@@ -16,7 +16,6 @@ function LocalStorageTheme() {
 const Navbar = () => {
   const { user } = useContext(GlobalContext);
   const [theme, setTheme] = useState(LocalStorageTheme());
-
   function handleClick() {
     const newTheme = theme === themes.winter ? themes.dracula : themes.winter;
     setTheme(newTheme);

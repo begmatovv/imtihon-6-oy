@@ -16,6 +16,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/firebaseConfig";
 import { action as signupAction } from "./pages/Signup";
 import { action as signinAction } from "./pages/Signin";
+import { action as createAction } from "./pages/Create";
+import { loader as singleReceptLoader } from "./components/SingleRecept";
 function App() {
   const { user, dispatch, authChange } = useContext(GlobalContext);
   const routes = createBrowserRouter([
@@ -34,10 +36,12 @@ function App() {
         {
           path: "/create",
           element: <Create />,
+          action: createAction,
         },
         {
           path: "/singleRecept/:id",
           element: <SingleRecept />,
+          loader: singleReceptLoader,
         },
       ],
     },

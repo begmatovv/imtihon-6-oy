@@ -1,16 +1,16 @@
 import { Link, Form, useActionData } from "react-router-dom";
-import useSignup from "../hooks/useSignup";
+import { useSignup } from "../hooks/useSignup";
 import { FcGoogle } from "react-icons/fc";
 import FormInput from "../components/FormInput";
 import { useEffect } from "react";
 export const action = async ({ request }) => {
   let formData = await request.formData();
-  let username = formData.get("Name");
+  let name = formData.get("Name");
   let email = formData.get("Email");
-  let password = formData.get("password");
-  let url = formData.get("photoURL");
+  let password = formData.get("Password");
+  let url = formData.get("Photo");
 
-  return { username, password, email, url };
+  return { password, email, name, url };
 };
 const Signup = () => {
   let userSignup = useActionData();
@@ -19,17 +19,22 @@ const Signup = () => {
     useSignup();
   useEffect(() => {
     if (userSignup) {
-      signupWithPasswordAndEmail(userSignup.email, userSignup.password);
+      signupWithPasswordAndEmail(
+        userSignup.name,
+        userSignup.email,
+        userSignup.password,
+        userSignup.url
+      );
     }
   }, [userSignup]);
   return (
     <div className="min-h-screen grid place-items-center">
       <div className="max-w-96 w-full">
-        <Form method="POST">
-          <FormInput type="text" label="User name:" name="displayName" />
-          <FormInput type="url" label="Photo URL:" name="photoURL" />
+        <Form method="post">
+          <FormInput type="text" label="User name:" name="Name" />
+          <FormInput type="url" label="Photo URL:" name="Photo" />
           <FormInput type="email" label="Email:" name="Email" />
-          <FormInput type="password" label="Password:" name="password" />
+          <FormInput type="password" label="Password:" name="Password" />
           <div>
             <button
               className="btn btn-secondary w-full mb-3 text-xl"

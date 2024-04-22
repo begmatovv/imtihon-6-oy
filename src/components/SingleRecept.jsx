@@ -1,26 +1,40 @@
-import { Link, useParams } from "react-router-dom";
-import { useFetch } from "../hooks/useFetch";
+import { Link, useLoaderData } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
+export const loader = async ({ params }) => {
+  console.log(params);
 
+  const docRef = doc(db, "recepts", params.id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    return docSnap.data();
+  } else {
+    // docSnap.data() will be undefined in this case
+    console.log("No such document!");
+  }
+  return null;
+};
 const SingleRecept = () => {
-  const { id } = useParams();
-  const { data: recept } = useFetch("http://localhost:3000/recepts/" + id);
+  const data = useLoaderData();
+  console.log(data);
   return (
     <div>
-      {recept && (
+      {data && (
         <div>
           <h1 className="text-2xl mb-4 font-semibold">Recept elements</h1>
           <img
-            src={recept.image}
+            src={data.image}
             alt=""
             className="w-full h-80 object-cover rounded mb-5 "
           />
           <div>
-            <h1 className="font-bold text-2xl mb-5">{recept.name}</h1>
+            <h1 className="font-bold text-2xl mb-5">{data.title}</h1>
           </div>
           <span className="flex gap-2 justify-start items-center mb-3">
             Ingredients:
             <span className="flex gap-2">
-              {recept.ingredients.map((ing) => {
+              {data.ingredients.map((ing) => {
                 return (
                   <span className="btn btn-primary-content" key={ing}>
                     {ing}
@@ -33,12 +47,12 @@ const SingleRecept = () => {
             Cooking time:
             <span className="p-1 bg-slate-200 rounded-lg">
               {" "}
-              {recept.time} minutes
+              {data.cookingTime} minutes
             </span>
           </p>
           <div className="mb-3">
             <p className="text-xl font-medium mb-3">Method</p>
-            <p>{recept.body}</p>
+            <p>{data.method}</p>
           </div>
         </div>
       )}

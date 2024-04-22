@@ -1,22 +1,9 @@
 import { Link } from "react-router-dom";
 import { IoTrashOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
 const ReceptsList = ({ recepts }) => {
-  const [check, setCheck] = useState(0);
-  const deleteRecept = (id) => {
-    fetch("http://localhost:3000/recepts/" + id, {
-      method: "DELETE",
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((data) => {
-        setCheck(Math.random());
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  
   return (
     <div>
       <h1 className="mb-5 text-2xl font-bold">Recepts</h1>
@@ -32,9 +19,9 @@ const ReceptsList = ({ recepts }) => {
                 />
               </figure>
               <div className="card-body">
-                <h2 className="card-title text-xl">{recept.name}</h2>
-                <span className="">{recept.time} minutes</span>
-                <p className="line-clamp-3">{recept.body}</p>
+                <h2 className="card-title text-xl">{recept.title}</h2>
+                <span className="">{recept.cookingTime} minutes</span>
+                <p className="line-clamp-3">{recept.method}</p>
 
                 <div className="card-actions flex-nowrap items-center">
                   <Link
