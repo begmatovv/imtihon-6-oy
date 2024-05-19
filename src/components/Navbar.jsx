@@ -39,7 +39,8 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-end">
-          {user && <p className="mr-3">{user.displayName}</p>}
+        {user && <p className="mr-3">{user.displayName}</p>}
+        console.log(user);
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
